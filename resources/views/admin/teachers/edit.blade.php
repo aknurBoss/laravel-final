@@ -1,53 +1,75 @@
 @extends('layouts.app')
+
+@section('title', 'Редактировать учителя')
+
 @section('content')
+    @php
+        $isHomeroom = old('is_homeroom_teacher', $teacher->is_homeroom_teacher);
+        $selectedClassId = old('homeroom_class_id', $teacher->homeroomClass?->id);
+    @endphp
 
     <div class="mb-6">
-        <a href="{{ route('admin.teachers.index') }}" class="text-sm text-slate-500 hover:text-indigo-600 flex items-center gap-1">
-            Назад к учителям
-        </a>
-        <h1 class="text-2xl font-bold text-slate-900 mt-2">Редактировать учителя</h1>
+        <a href="{{ route('admin.teachers.index') }}" class="text-sm text-slate-500 hover:text-brand-600">← Учителя</a>
+        <h1 class="page-title mt-2">Редактировать учителя</h1>
     </div>
 
-    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 max-w-xl">
+    <div class="card-padded max-w-xl">
         <form action="{{ route('admin.teachers.update', $teacher) }}" method="POST" class="space-y-5">
             @csrf @method('PUT')
-            @php $inp = 'w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500'; @endphp
 
-            <div class="border-b border-slate-100 pb-4 mb-1">
-                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Данные аккаунта</h3>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Имя</label>
-                        <input type="text" name="name" value="{{ old('name', $teacher->user?->name) }}" class="{{ $inp }}">
-                        @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
-                        <input type="email" name="email" value="{{ old('email', $teacher->user?->email) }}" class="{{ $inp }}">
-                        @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Новый пароль <span class="text-slate-400 font-normal">(пустым — без изменений)</span></label>
-                        <input type="password" name="password" class="{{ $inp }}">
-                        @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Аккаунт</h3>
+                <div>
+                    <label class="form-label">Имя</label>
+                    <input type="text" name="name" value="{{ old('name', $teacher->user?->name) }}" class="form-input" required>
+                    @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" value="{{ old('email', $teacher->user?->email) }}" class="form-input" required>
+                    @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="form-label">Новый пароль <span class="text-slate-400 font-normal">(необязательно)</span></label>
+                    <input type="password" name="password" class="form-input">
+                    @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
-            <div>
-                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Профиль</h3>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Предмет</label>
-                    <input type="text" name="subject" value="{{ old('subject', $teacher->subject) }}" class="{{ $inp }}">
-                    @error('subject') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            <div class="border-t border-border pt-5 space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Роль в школе</h3>
+                <label class="flex items-start gap-3 cursor-pointer rounded-xl border border-border p-4 hover:bg-slate-50">
+                    <input type="checkbox" name="is_homeroom_teacher" value="1" id="is_homeroom"
+                           class="mt-0.5 rounded text-brand-600"
+                           @checked($isHomeroom)>
+                    <span>
+                        <span class="font-semibold text-slate-900 block">Классный руководитель</span>
+                        <span class="text-xs text-slate-500">Управление своим классом: ученики, баллы, история.</span>
+                    </span>
+                </label>
+
+                <div id="homeroom-class-wrap" class="{{ $isHomeroom ? '' : 'hidden' }}">
+                    <label class="form-label">Класс</label>
+                    <select name="homeroom_class_id" class="form-select">
+                        <option value="">— Выберите класс —</option>
+                        @foreach ($classes as $c)
+                            <option value="{{ $c->id }}" @selected($selectedClassId == $c->id)>{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('homeroom_class_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div class="flex gap-3 pt-2">
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors">Сохранить</button>
-                <a href="{{ route('admin.teachers.index') }}" class="px-5 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-slate-100 transition-colors">Отмена</a>
+                <button type="submit" class="btn-primary">Сохранить</button>
+                <a href="{{ route('admin.teachers.index') }}" class="btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
 
+    <script>
+        document.getElementById('is_homeroom')?.addEventListener('change', function () {
+            document.getElementById('homeroom-class-wrap').classList.toggle('hidden', !this.checked);
+        });
+    </script>
 @endsection

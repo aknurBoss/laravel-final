@@ -27,6 +27,10 @@
         'student' => route('student.dashboard'),
         default => route('login'),
     };
+
+    $teacherProfile = ($role === 'teacher' && auth()->check())
+        ? \App\Models\Teacher::with('homeroomClass')->where('user_id', auth()->id())->first()
+        : null;
 @endphp
 
 <div class="app-shell">
@@ -74,6 +78,15 @@
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Выдача баллов
                     </a>
+                    @if ($teacherProfile?->is_homeroom_teacher)
+                        <a href="{{ route('teacher.homeroom') }}" class="nav-link {{ request()->routeIs('teacher.homeroom*') ? 'active' : '' }}">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2M5 21H3m2 0h2M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
+                            Мой класс
+                            @if ($teacherProfile->homeroomClass)
+                                <span class="ml-auto text-xs text-slate-400">{{ $teacherProfile->homeroomClass->name }}</span>
+                            @endif
+                        </a>
+                    @endif
                 @elseif ($role === 'student')
                     <a href="{{ route('student.dashboard') }}" class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -129,7 +142,10 @@
                     <a href="{{ route('admin.students.index') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('admin.students.*') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Ученики</a>
                     <a href="{{ route('admin.rules.index') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('admin.rules.*') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Правила</a>
                 @elseif ($role === 'teacher')
-                    <a href="{{ route('teacher.dashboard') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg bg-brand-50 text-brand-700 font-semibold">Баллы</a>
+                    <a href="{{ route('teacher.dashboard') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('teacher.dashboard') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Баллы</a>
+                    @if ($teacherProfile?->is_homeroom_teacher)
+                        <a href="{{ route('teacher.homeroom') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('teacher.homeroom*') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Мой класс</a>
+                    @endif
                 @else
                     <a href="{{ route('student.dashboard') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg bg-brand-50 text-brand-700 font-semibold">Профиль</a>
                     <a href="{{ route('notifications.index') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-slate-600">Уведомления</a>

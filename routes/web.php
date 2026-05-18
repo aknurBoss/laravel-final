@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminTeacherController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TeacherHomeroomController;
 use App\Http\Controllers\TeacherPointController;
 use App\Http\Controllers\WebNotificationController;
 use Illuminate\Support\Facades\Route;
@@ -71,6 +72,9 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
     Route::get('/teacher', [DashboardController::class, 'teacher'])->name('teacher.dashboard');
     Route::post('/teacher/assign', [TeacherPointController::class, 'assign'])->name('teacher.assign');
     Route::post('/teacher/history/{history}/cancel', [TeacherPointController::class, 'cancel'])->name('teacher.history.cancel');
+
+    Route::get('/teacher/my-class', [TeacherHomeroomController::class, 'index'])->name('teacher.homeroom');
+    Route::get('/teacher/my-class/students/{student}', [TeacherHomeroomController::class, 'studentHistory'])->name('teacher.homeroom.student');
 });
 
 Route::middleware(['auth', 'role:student'])->group(function () {

@@ -1,58 +1,62 @@
 @extends('layouts.app')
 
+@section('title', 'Учителя')
+
+@section('page-header')
+    <h1 class="page-title">Учителя</h1>
+    <p class="page-subtitle">Обычные учителя выдают баллы; классный руководитель ведёт свой класс</p>
+@endsection
+
 @section('content')
-    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-3">
-        <h1 class="text-2xl font-semibold">Учителя</h1>
-        <div class="flex-1 md:flex-none md:w-auto">
-            <form method="GET" action="{{ route('admin.teachers.index') }}" class="flex gap-2">
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Поиск по имени/email"
-                       class="border rounded px-3 py-1 text-sm w-full md:w-64">
-                <button type="submit" class="bg-gray-200 px-3 py-1 rounded text-sm">Найти</button>
-            </form>
-        </div>
-        <a href="{{ route('admin.teachers.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm">
-            + Добавить учителя
-        </a>
+    <div class="flex flex-col md:flex-row md:justify-end md:items-center mb-6 gap-3">
+        <form method="GET" action="{{ route('admin.teachers.index') }}" class="flex gap-2 flex-1 md:max-w-sm">
+            <input type="text" name="q" value="{{ request('q') }}" placeholder="Поиск по имени/email" class="form-input">
+            <button type="submit" class="btn-secondary">Найти</button>
+        </form>
+        <a href="{{ route('admin.teachers.create') }}" class="btn-primary shrink-0">+ Добавить учителя</a>
     </div>
 
-    <div class="bg-white rounded shadow overflow-x-auto">
-        <table class="min-w-full text-sm">
+    <div class="card overflow-hidden">
+        <table class="data-table">
             <thead>
-            <tr class="border-b">
-                <th class="text-left py-2 px-3">Имя</th>
-                <th class="text-left py-2 px-3">Email</th>
-                <th class="text-left py-2 px-3">Предмет</th>
-                <th class="text-left py-2 px-3">Активен</th>
-                <th class="text-left py-2 px-3"></th>
-            </tr>
+                <tr>
+                    <th>Имя</th>
+                    <th>Email</th>
+                    <th>Тип</th>
+                    <th>Класс</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            @forelse ($teachers as $teacher)
-                <tr class="border-b last:border-0">
-                    <td class="py-2 px-3">{{ $teacher->user?->name ?? '—' }}</td>
-                    <td class="py-2 px-3">{{ $teacher->user?->email ?? '—' }}</td>
-                    <td class="py-2 px-3">{{ $teacher->subject ?? '—' }}</td>
-                    <td class="py-2 px-3">{{ $teacher->user?->is_active ? 'Да' : 'Нет' }}</td>
-                    <td class="py-2 px-3 text-right space-x-3">
-                        @if ($teacher->user)
-                            <a href="{{ route('admin.history.teacher', $teacher->user) }}" class="text-gray-500 text-sm">История</a>
-                        @endif
-                        <a href="{{ route('admin.teachers.edit', $teacher) }}" class="text-indigo-600 text-sm">Редактировать</a>
-                        <form action="{{ route('admin.teachers.destroy', $teacher) }}" method="POST" class="inline"
-                              onsubmit="return confirm('Удалить учителя «{{ $teacher->user?->name }}»?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 text-sm">Удалить</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" class="py-4 px-3 text-center text-gray-500">
-                        Учителей пока нет.
-                    </td>
-                </tr>
-            @endforelse
+                @forelse ($teachers as $teacher)
+                    <tr>
+                        <td class="font-medium text-slate-800">{{ $teacher->user?->name ?? '—' }}</td>
+                        <td class="text-slate-600">{{ $teacher->user?->email ?? '—' }}</td>
+                        <td>
+                            @if ($teacher->is_homeroom_teacher)
+                                <span class="badge bg-sky-100 text-sky-800">Классный руководитель</span>
+                            @else
+                                <span class="badge-neutral">Учитель</span>
+                            @endif
+                        </td>
+                        <td class="text-slate-600">{{ $teacher->homeroomClass?->name ?? '—' }}</td>
+                        <td class="text-right space-x-2 whitespace-nowrap">
+                            @if ($teacher->user)
+                                <a href="{{ route('admin.history.teacher', $teacher->user) }}" class="text-xs text-slate-500 hover:underline">История</a>
+                            @endif
+                            <a href="{{ route('admin.teachers.edit', $teacher) }}" class="text-xs text-brand-600 font-medium hover:underline">Изменить</a>
+                            <form action="{{ route('admin.teachers.destroy', $teacher) }}" method="POST" class="inline"
+                                  onsubmit="return confirm('Удалить учителя?');">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-xs text-red-500 font-medium hover:underline">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="py-12 text-center text-slate-500">Учителей пока нет.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

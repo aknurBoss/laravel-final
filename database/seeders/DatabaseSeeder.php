@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
@@ -22,15 +23,27 @@ class DatabaseSeeder extends Seeder
         $class10a = SchoolClass::create(['name' => '10А']);
         $class9b = SchoolClass::create(['name' => '9Б']);
 
-        $teacherUser = User::factory()->create([
+        $homeroomUser = User::factory()->create([
             'name'      => 'Иван Петров',
             'email'     => 'teacher@example.com',
             'role'      => 'teacher',
             'is_active' => true,
         ]);
+        $homeroomTeacher = Teacher::create([
+            'user_id'             => $homeroomUser->id,
+            'is_homeroom_teacher' => true,
+        ]);
+        $class10a->update(['homeroom_teacher_id' => $homeroomTeacher->id]);
+
+        $regularUser = User::factory()->create([
+            'name'      => 'Айгуль Смагулова',
+            'email'     => 'teacher2@example.com',
+            'role'      => 'teacher',
+            'is_active' => true,
+        ]);
         Teacher::create([
-            'user_id' => $teacherUser->id,
-            'subject' => 'Классный руководитель',
+            'user_id'             => $regularUser->id,
+            'is_homeroom_teacher' => false,
         ]);
 
         $starting = Student::startingPoints();
@@ -50,9 +63,9 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
             ]);
             Student::create([
-                'user_id'         => $user->id,
-                'class_id'        => $data['class_id'],
-                'current_points'  => $data['points'],
+                'user_id'        => $user->id,
+                'class_id'       => $data['class_id'],
+                'current_points' => $data['points'],
             ]);
         }
 
@@ -70,6 +83,5 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
             ]);
         }
-
     }
 }

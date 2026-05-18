@@ -82,7 +82,8 @@
                 <div class="space-y-2 text-sm">
                     @foreach ([
                         ['label' => 'Администратор', 'email' => 'admin@example.com'],
-                        ['label' => 'Учитель', 'email' => 'teacher@example.com'],
+                        ['label' => 'Классный руководитель (10А)', 'email' => 'teacher@example.com'],
+                        ['label' => 'Учитель (без класса)', 'email' => 'teacher2@example.com'],
                         ['label' => 'Ученик', 'email' => 'student@example.com'],
                     ] as $demo)
                         <button type="button" onclick="fillLogin('{{ $demo['email'] }}')"

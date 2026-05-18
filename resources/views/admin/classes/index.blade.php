@@ -16,6 +16,7 @@
                 <tr>
                     <th class="text-left px-6 py-3 font-medium">Класс</th>
                     <th class="text-left px-4 py-3 font-medium">Учеников</th>
+                    <th class="text-left px-4 py-3 font-medium">Классный руководитель</th>
                     <th class="text-right px-6 py-3 font-medium">Действия</th>
                 </tr>
                 </thead>
@@ -27,6 +28,9 @@
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
                                 {{ $class->students_count }} уч.
                             </span>
+                        </td>
+                        <td class="px-4 py-3 text-slate-700 text-sm">
+                            {{ $class->homeroomTeacher?->user?->name ?? '—' }}
                         </td>
                         <td class="px-6 py-3 text-right">
                             <div class="flex items-center justify-end gap-2">
@@ -47,7 +51,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="px-6 py-12 text-center text-slate-400 text-sm">Классов пока нет.</td>
+                        <td colspan="4" class="px-6 py-12 text-center text-slate-400 text-sm">Классов пока нет.</td>
                     </tr>
                 @endforelse
                 </tbody>

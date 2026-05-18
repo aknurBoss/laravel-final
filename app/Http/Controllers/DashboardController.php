@@ -69,7 +69,18 @@ class DashboardController extends Controller
 
         $history = $historyQuery->orderByDesc('created_at')->limit(50)->get();
 
-        return view('teacher.dashboard', compact('classes', 'allStudents', 'rules', 'history', 'mode'));
+        $teacherProfile = Teacher::with('homeroomClass')
+            ->where('user_id', $user?->id)
+            ->first();
+
+        return view('teacher.dashboard', compact(
+            'classes',
+            'allStudents',
+            'rules',
+            'history',
+            'mode',
+            'teacherProfile',
+        ));
     }
 
     public function student(Request $request): View

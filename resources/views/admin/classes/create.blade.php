@@ -1,28 +1,41 @@
 @extends('layouts.app')
-@section('content')
 
+@section('title', 'Новый класс')
+
+@section('content')
     <div class="mb-6">
-        <a href="{{ route('admin.classes.index') }}" class="text-sm text-slate-500 hover:text-indigo-600 flex items-center gap-1">
-            Назад к классам
-        </a>
-        <h1 class="text-2xl font-bold text-slate-900 mt-2">Новый класс</h1>
-        <p class="text-sm text-slate-500 mt-0.5">Введите название класса: <span class="font-medium text-slate-700">9А</span>, <span class="font-medium text-slate-700">11Б</span></p>
+        <a href="{{ route('admin.classes.index') }}" class="text-sm text-slate-500 hover:text-brand-600">← Классы</a>
+        <h1 class="page-title mt-2">Новый класс</h1>
     </div>
 
-    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 max-w-sm">
-        <form action="{{ route('admin.classes.store') }}" method="POST" class="space-y-4">
+    <div class="card-padded max-w-lg">
+        <form action="{{ route('admin.classes.store') }}" method="POST" class="space-y-5">
             @csrf
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Название класса</label>
-                <input type="text" name="name" value="{{ old('name') }}" placeholder="Например: 9А" autofocus
-                       class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label class="form-label">Название класса</label>
+                <input type="text" name="name" value="{{ old('name') }}" placeholder="9А" class="form-input" required autofocus>
                 @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
+            <div>
+                <label class="form-label">Классный руководитель <span class="text-slate-400 font-normal">(необязательно)</span></label>
+                <select name="homeroom_teacher_id" class="form-select">
+                    <option value="">— Не назначен —</option>
+                    @foreach ($teachers as $t)
+                        <option value="{{ $t->id }}" @selected(old('homeroom_teacher_id') == $t->id)
+                                @disabled($t->homeroomClass !== null)>
+                            {{ $t->user?->name ?? '—' }}
+                            @if ($t->homeroomClass)
+                                (уже ведёт {{ $t->homeroomClass->name }})
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+                @error('homeroom_teacher_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
             <div class="flex gap-3">
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors">Сохранить</button>
-                <a href="{{ route('admin.classes.index') }}" class="px-5 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-slate-100 transition-colors">Отмена</a>
+                <button type="submit" class="btn-primary">Сохранить</button>
+                <a href="{{ route('admin.classes.index') }}" class="btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
-
 @endsection
