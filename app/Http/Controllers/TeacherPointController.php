@@ -8,12 +8,35 @@ use App\Services\PointService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class TeacherPointController extends Controller
 {
     public function __construct(
         private PointService $pointService,
     ) {}
+
+    public function assignments(Request $request): View
+    {
+        $user = $request->user() ?? auth()->user();
+
+        $historyQuery = PointHistory::with(['student.user', 'student.schoolClass', 'rule'])
+            ->where('teacher_id', $user?->id);
+
+        if ($request->filled('hf')) {
+            $historyQuery->whereDate('created_at', '>=', $request->input('hf'));
+        }
+        if ($request->filled('ht')) {
+            $historyQuery->whereDate('created_at', '<=', $request->input('ht'));
+        }
+        if ($request->filled('htype')) {
+            $historyQuery->whereHas('rule', fn ($q) => $q->where('type', $request->input('htype')));
+        }
+
+        $history = $historyQuery->orderByDesc('created_at')->limit(100)->get();
+
+        return view('teacher.assignments.index', compact('history'));
+    }
 
     public function assign(Request $request): RedirectResponse
     {
@@ -59,7 +82,7 @@ class TeacherPointController extends Controller
         }
 
         return redirect()
-            ->route('teacher.dashboard', ['mode' => $mode])
+            ->route('teacher.assignments')
             ->with('status', 'Баллы успешно назначены.');
     }
 

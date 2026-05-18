@@ -180,82 +180,9 @@
 </div>
 @endif
 
-{{-- ═══ HISTORY ═══ --}}
-<div class="card overflow-hidden">
-    <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b border-slate-100">
-        <h2 class="font-semibold text-slate-800">Мои назначения</h2>
-
-        <form method="GET" action="{{ route('teacher.dashboard') }}" class="flex flex-wrap items-end gap-2 text-xs">
-            <input type="hidden" name="mode" value="{{ $mode }}">
-            <div>
-                <label class="block text-slate-500 mb-1">С</label>
-                <input type="date" name="hf" value="{{ request('hf') }}"
-                       class="border border-slate-300 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div>
-                <label class="block text-slate-500 mb-1">По</label>
-                <input type="date" name="ht" value="{{ request('ht') }}"
-                       class="border border-slate-300 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div>
-                <label class="block text-slate-500 mb-1">Тип</label>
-                <select name="htype" class="border border-slate-300 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option value="">Все</option>
-                    <option value="reward" @selected(request('htype') === 'reward')>Награды</option>
-                    <option value="penalty" @selected(request('htype') === 'penalty')>Штрафы</option>
-                </select>
-            </div>
-            <button type="submit" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">Применить</button>
-        </form>
-    </div>
-
-    @if ($history->isEmpty())
-        <div class="px-6 py-12 text-center text-slate-400 text-sm">История пуста.</div>
-    @else
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-slate-50 text-xs text-slate-500 uppercase tracking-wide">
-                    <tr>
-                        <th class="text-left px-6 py-3 font-medium">Время</th>
-                        <th class="text-left px-4 py-3 font-medium">Ученик</th>
-                        <th class="text-left px-4 py-3 font-medium">Класс</th>
-                        <th class="text-left px-4 py-3 font-medium">Правило</th>
-                        <th class="text-left px-4 py-3 font-medium">Баллы</th>
-                        <th class="text-left px-4 py-3 font-medium">Комментарий</th>
-                        <th class="px-4 py-3"></th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @foreach ($history as $record)
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-3 text-xs text-slate-400 whitespace-nowrap">{{ $record->created_at->format('d.m H:i') }}</td>
-                            <td class="px-4 py-3 font-medium text-slate-800">{{ $record->student?->user?->name ?? '—' }}</td>
-                            <td class="px-4 py-3 text-slate-500">{{ $record->student?->schoolClass?->name ?? '—' }}</td>
-                            <td class="px-4 py-3 text-slate-700">{{ $record->rule?->name ?? '—' }}</td>
-                            <td class="px-4 py-3 font-semibold">
-                                @if ($record->points > 0)
-                                    <span class="text-emerald-600">+{{ $record->points }}</span>
-                                @else
-                                    <span class="text-red-500">{{ $record->points }}</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-slate-400 text-xs">{{ $record->comment ?? '—' }}</td>
-                            <td class="px-4 py-3">
-                                <form method="POST" action="{{ route('teacher.history.cancel', $record) }}"
-                                      onsubmit="return confirm('Отменить это назначение?');">
-                                    @csrf
-                                    <button type="submit"
-                                            class="text-xs text-red-500 hover:text-red-700 px-2.5 py-1 rounded-lg hover:bg-red-50 transition-colors font-medium">
-                                        Отменить
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
+<div class="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-slate-50 px-4 py-3">
+    <p class="text-sm text-slate-600">После выдачи баллов смотрите историю на отдельной странице.</p>
+    <a href="{{ route('teacher.assignments') }}" class="btn-secondary text-sm">Мои назначения →</a>
 </div>
 
 <script>

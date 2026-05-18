@@ -70,6 +70,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
     Route::get('/teacher', [DashboardController::class, 'teacher'])->name('teacher.dashboard');
+    Route::get('/teacher/assignments', [TeacherPointController::class, 'assignments'])->name('teacher.assignments');
     Route::post('/teacher/assign', [TeacherPointController::class, 'assign'])->name('teacher.assign');
     Route::post('/teacher/history/{history}/cancel', [TeacherPointController::class, 'cancel'])->name('teacher.history.cancel');
 

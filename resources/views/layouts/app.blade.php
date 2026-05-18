@@ -78,6 +78,10 @@
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Выдача баллов
                     </a>
+                    <a href="{{ route('teacher.assignments') }}" class="nav-link {{ request()->routeIs('teacher.assignments') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Мои назначения
+                    </a>
                     @if ($teacherProfile?->is_homeroom_teacher)
                         <a href="{{ route('teacher.homeroom') }}" class="nav-link {{ request()->routeIs('teacher.homeroom*') ? 'active' : '' }}">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2M5 21H3m2 0h2M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
@@ -143,6 +147,7 @@
                     <a href="{{ route('admin.rules.index') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('admin.rules.*') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Правила</a>
                 @elseif ($role === 'teacher')
                     <a href="{{ route('teacher.dashboard') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('teacher.dashboard') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Баллы</a>
+                    <a href="{{ route('teacher.assignments') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('teacher.assignments') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Назначения</a>
                     @if ($teacherProfile?->is_homeroom_teacher)
                         <a href="{{ route('teacher.homeroom') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('teacher.homeroom*') ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-slate-600' }}">Мой класс</a>
                     @endif

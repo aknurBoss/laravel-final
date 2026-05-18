@@ -53,33 +53,11 @@ class DashboardController extends Controller
 
         $rules = DisciplineRule::where('is_active', true)->orderByDesc('points')->get();
 
-        // История назначений этого учителя
-        $historyQuery = PointHistory::with(['student.user', 'student.schoolClass', 'rule'])
-            ->where('teacher_id', $user?->id);
-
-        if ($request->filled('hf')) {
-            $historyQuery->whereDate('created_at', '>=', $request->input('hf'));
-        }
-        if ($request->filled('ht')) {
-            $historyQuery->whereDate('created_at', '<=', $request->input('ht'));
-        }
-        if ($request->filled('htype')) {
-            $historyQuery->whereHas('rule', fn ($q) => $q->where('type', $request->input('htype')));
-        }
-
-        $history = $historyQuery->orderByDesc('created_at')->limit(50)->get();
-
-        $teacherProfile = Teacher::with('homeroomClass')
-            ->where('user_id', $user?->id)
-            ->first();
-
         return view('teacher.dashboard', compact(
             'classes',
             'allStudents',
             'rules',
-            'history',
             'mode',
-            'teacherProfile',
         ));
     }
 
