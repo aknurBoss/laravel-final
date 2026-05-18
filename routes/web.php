@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminClassController;
 use App\Http\Controllers\AdminHistoryWebController;
 use App\Http\Controllers\AdminPointController;
+use App\Http\Controllers\AdminSemesterController;
 use App\Http\Controllers\AdminRuleController;
 use App\Http\Controllers\AdminStudentController;
 use App\Http\Controllers\AdminTeacherController;
@@ -66,6 +67,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/history/student/{student}', [AdminHistoryWebController::class, 'student'])->name('admin.history.student');
     Route::get('/admin/history/teacher/{user}', [AdminHistoryWebController::class, 'teacher'])->name('admin.history.teacher');
+
+    Route::get('/admin/semesters', [AdminSemesterController::class, 'index'])->name('admin.semesters.index');
+    Route::get('/admin/semesters/{semester}', [AdminSemesterController::class, 'show'])->name('admin.semesters.show');
+    Route::post('/admin/semesters/close', [AdminSemesterController::class, 'close'])->name('admin.semesters.close');
 });
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {

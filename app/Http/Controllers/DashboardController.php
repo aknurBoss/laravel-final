@@ -8,6 +8,7 @@ use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Services\SemesterService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -18,15 +19,19 @@ class DashboardController extends Controller
         $totalStudents = Student::count();
         $totalTeachers = Teacher::count();
 
-        $allHistory = PointHistory::all();
+        $allHistory = PointHistory::query()->inActiveSemester()->get();
         $sumPositivePoints = $allHistory->where('points', '>', 0)->sum('points');
         $sumNegativePoints = (int) abs($allHistory->where('points', '<', 0)->sum('points'));
         $totalAssignments = $allHistory->count();
 
-        $latestHistory = PointHistory::with(['student.user', 'student.schoolClass', 'teacher', 'rule'])
+        $latestHistory = PointHistory::query()
+            ->inActiveSemester()
+            ->with(['student.user', 'student.schoolClass', 'teacher', 'rule'])
             ->orderByDesc('created_at')
             ->limit(10)
             ->get();
+
+        $activeSemester = app(SemesterService::class)->active();
 
         return view('admin.dashboard', compact(
             'totalStudents',
@@ -35,6 +40,7 @@ class DashboardController extends Controller
             'sumNegativePoints',
             'totalAssignments',
             'latestHistory',
+            'activeSemester',
         ));
     }
 
@@ -82,7 +88,9 @@ class DashboardController extends Controller
         }
 
         // история конкретного ученика
-        $history = PointHistory::with(['teacher', 'rule'])
+        $history = PointHistory::query()
+            ->inActiveSemester()
+            ->with(['teacher', 'rule'])
             ->where('student_id', $student->id)
             ->orderByDesc('created_at')
             ->limit(20)

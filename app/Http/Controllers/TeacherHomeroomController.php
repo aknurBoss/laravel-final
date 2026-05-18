@@ -37,7 +37,9 @@ class TeacherHomeroomController extends Controller
 
         $student->load(['user', 'schoolClass']);
 
-        $history = PointHistory::with(['teacher', 'rule'])
+        $history = PointHistory::query()
+            ->inActiveSemester()
+            ->with(['teacher', 'rule'])
             ->where('student_id', $student->id)
             ->orderByDesc('created_at')
             ->limit(100)

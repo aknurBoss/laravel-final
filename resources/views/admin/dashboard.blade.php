@@ -4,7 +4,11 @@
 
 @section('page-header')
     <h1 class="page-title">Панель администратора</h1>
-    <p class="page-subtitle">Сводка по школе: участники, активность и последние назначения баллов</p>
+    <p class="page-subtitle">
+        Активный семестр: <strong>{{ $activeSemester->name }}</strong>
+        (с {{ $activeSemester->started_at->format('d.m.Y') }}) —
+        <a href="{{ route('admin.semesters.index') }}" class="text-brand-600 hover:underline">архив и сброс</a>
+    </p>
 @endsection
 
 @section('content')

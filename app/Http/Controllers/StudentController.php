@@ -52,6 +52,7 @@ class StudentController extends Controller
 
         $history = PointHistory::with(['teacher', 'rule'])
             ->where('student_id', $student->id)
+            ->inActiveSemester()
             ->orderByDesc('created_at')
             ->paginate($perPage);
 

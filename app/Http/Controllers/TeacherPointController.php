@@ -20,7 +20,9 @@ class TeacherPointController extends Controller
     {
         $user = $request->user() ?? auth()->user();
 
-        $historyQuery = PointHistory::with(['student.user', 'student.schoolClass', 'rule'])
+        $historyQuery = PointHistory::query()
+            ->inActiveSemester()
+            ->with(['student.user', 'student.schoolClass', 'rule'])
             ->where('teacher_id', $user?->id);
 
         if ($request->filled('hf')) {
@@ -96,6 +98,10 @@ class TeacherPointController extends Controller
         // Учитель может отменять только свои назначения
         if ($history->teacher_id !== $user->id) {
             abort(403);
+        }
+
+        if ($history->semester_id !== app(\App\Services\SemesterService::class)->activeSemesterId()) {
+            abort(403, 'Нельзя отменить запись из архивного семестра.');
         }
 
         DB::transaction(function () use ($history) {

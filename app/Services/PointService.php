@@ -12,6 +12,7 @@ class PointService
 {
     public function __construct(
         private NotificationService $notificationService,
+        private SemesterService $semesterService,
     ) {}
 
     public function assignPoints(
@@ -56,6 +57,7 @@ class PointService
                     $student->save();
 
                     $history = PointHistory::query()->create([
+                        'semester_id' => $this->semesterService->activeSemesterId(),
                         'student_id' => $student->id,
                         'rule_id' => $rule->id,
                         'teacher_id' => $actorRole === 'teacher' || $actorRole === 'admin' ? $actorUser->id : null,

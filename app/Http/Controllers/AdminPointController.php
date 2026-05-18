@@ -30,7 +30,9 @@ class AdminPointController extends Controller
         $rules = DisciplineRule::where('is_active', true)->orderByDesc('points')->get();
 
         // История назначений с фильтрами
-        $historyQuery = PointHistory::with(['student.user', 'student.schoolClass', 'teacher', 'rule']);
+        $historyQuery = PointHistory::query()
+            ->inActiveSemester()
+            ->with(['student.user', 'student.schoolClass', 'teacher', 'rule']);
 
         if ($request->filled('hf')) {
             $historyQuery->whereDate('created_at', '>=', $request->input('hf'));
@@ -97,6 +99,10 @@ class AdminPointController extends Controller
 
     public function cancel(PointHistory $history): RedirectResponse
     {
+        if ($history->semester_id !== app(\App\Services\SemesterService::class)->activeSemesterId()) {
+            abort(403, 'Нельзя отменить запись из архивного семестра.');
+        }
+
         DB::transaction(function () use ($history) {
             $history->load('student');
             if ($history->student) {
