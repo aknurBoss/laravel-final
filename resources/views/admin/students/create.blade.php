@@ -49,7 +49,7 @@
                     </select>
                     @error('class_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 @endif
-                <p class="text-xs text-slate-400 mt-1.5">Начальные баллы выставляются автоматически: 100</p>
+                <p class="text-xs text-slate-400 mt-1.5">Начальные баллы выставляются автоматически: {{ $startingPoints ?? 100 }}</p>
             </div>
 
             <div class="flex gap-3 pt-2">

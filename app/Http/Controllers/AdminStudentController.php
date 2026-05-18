@@ -35,7 +35,9 @@ class AdminStudentController extends Controller
     {
         $classes = SchoolClass::orderBy('name')->get();
 
-        return view('admin.students.create', compact('classes'));
+        $startingPoints = Student::startingPoints();
+
+        return view('admin.students.create', compact('classes', 'startingPoints'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -58,7 +60,7 @@ class AdminStudentController extends Controller
         Student::create([
             'user_id'        => $user->id,
             'class_id'       => $data['class_id'],
-            'current_points' => 100,
+            'current_points' => Student::startingPoints(),
         ]);
 
         return redirect()->route('admin.students.index')

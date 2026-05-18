@@ -1,9 +1,13 @@
 @extends('layouts.app')
-@section('content')
 
-<div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-slate-900">Кабинет учителя</h1>
-</div>
+@section('title', 'Выдача баллов')
+
+@section('page-header')
+    <h1 class="page-title">Кабинет учителя</h1>
+    <p class="page-subtitle">Быстрое назначение меритов и демеритов — два удобных режима работы</p>
+@endsection
+
+@section('content')
 
 {{-- Mode switcher --}}
 <div class="flex gap-2 mb-6">
@@ -21,7 +25,7 @@
 
 {{-- ═══ MODE 1 ═══ --}}
 @if ($mode === '1')
-<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
+<div class="card-padded mb-6">
     <h2 class="font-semibold text-slate-800 mb-0.5">Режим 1 — одно правило, много учеников</h2>
     <p class="text-xs text-slate-400 mb-5">Выберите правило и отметьте учеников.</p>
 
@@ -111,7 +115,7 @@
 
 {{-- ═══ MODE 2 ═══ --}}
 @else
-<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
+<div class="card-padded mb-6">
     <h2 class="font-semibold text-slate-800 mb-0.5">Режим 2 — один ученик, несколько правил</h2>
     <p class="text-xs text-slate-400 mb-5">Выберите ученика и отметьте нужные правила.</p>
 
@@ -177,7 +181,7 @@
 @endif
 
 {{-- ═══ HISTORY ═══ --}}
-<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+<div class="card overflow-hidden">
     <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b border-slate-100">
         <h2 class="font-semibold text-slate-800">Мои назначения</h2>
 

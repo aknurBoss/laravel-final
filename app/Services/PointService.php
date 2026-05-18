@@ -67,7 +67,9 @@ class PointService
                     ]);
 
                     // Триггер уведомлений при низком балансе ученика
-                    if ($after < 20 && $student->user) {
+                    $lowThreshold = (int) config('discipline.low_points_threshold', 20);
+
+                    if ($after < $lowThreshold && $student->user) {
                         if ($delta < 0) {
                             $this->notificationService->notifyLowBalanceForStudent(
                                 studentUser: $student->user,
