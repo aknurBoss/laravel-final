@@ -84,9 +84,11 @@ class NotificationService
         int $currentPoints,
         string $comment = ''
     ): Notification {
+        $threshold = (int) config('discipline.low_points_threshold', 21);
         $body = sprintf(
-            'У вас стало меньше баллов: %d. Вас могут вызвать к завучу.%s',
+            'У вас осталось %d баллов (меньше %d). Вас могут вызвать к завучу.%s',
             $currentPoints,
+            $threshold,
             $comment ? ' Комментарий: ' . $comment : ''
         );
 

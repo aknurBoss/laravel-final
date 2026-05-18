@@ -92,7 +92,6 @@
                             <span class="block text-xs text-slate-500 mt-0.5">{{ $demo['email'] }} · пароль: password</span>
                         </button>
                     @endforeach
-                    <p class="text-xs text-slate-400 px-1 pt-1">Демо: <code class="text-slate-600">php artisan migrate:fresh --seed</code></p>
                 </div>
             </div>
         </div>

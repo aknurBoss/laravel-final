@@ -68,17 +68,15 @@ class PointService
                         'occurred_at' => now()->toDateString(),
                     ]);
 
-                    // Триггер уведомлений при низком балансе ученика
-                    $lowThreshold = (int) config('discipline.low_points_threshold', 20);
+                    // Уведомление, если баланс ниже порога (по умолчанию < 21)
+                    $lowThreshold = (int) config('discipline.low_points_threshold', 21);
 
-                    if ($after < $lowThreshold && $student->user) {
-                        if ($delta < 0) {
-                            $this->notificationService->notifyLowBalanceForStudent(
-                                studentUser: $student->user,
-                                currentPoints: $after,
-                                comment: $comment,
-                            );
-                        }
+                    if ($delta < 0 && $after < $lowThreshold && $student->user) {
+                        $this->notificationService->notifyLowBalanceForStudent(
+                            studentUser: $student->user,
+                            currentPoints: $after,
+                            comment: $comment,
+                        );
 
                         $admins = User::query()
                             ->where('role', 'admin')
