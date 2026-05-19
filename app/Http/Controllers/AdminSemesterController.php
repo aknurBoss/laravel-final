@@ -30,7 +30,7 @@ class AdminSemesterController extends Controller
         return view('admin.semesters.index', compact('activeSemester', 'archivedSemesters', 'activeStats'));
     }
 
-    public function show(Semester $semester): View
+    public function show(Semester $semester): View|RedirectResponse
     {
         if ($semester->isActive()) {
             return redirect()->route('admin.semesters.index');
